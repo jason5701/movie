@@ -1,0 +1,71 @@
+import { useEffect, useState } from 'react';
+import apiSettings from '../api';
+import { isPersistedState } from '../utils';
+
+const initState = {
+  page: 0,
+  results: [] as IMovie[],
+  total_pages: 0,
+  total_results: 0,
+};
+
+export const useHomeFetch = () => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [state, setState] = useState(initState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const fetchMovies = async (page: number, searchTerm = '') => {
+    try {
+      setIsError(false);
+      setIsLoading(true);
+
+      const movies = await apiSettings.fetchMovies(searchTerm, page);
+
+      setState((prev) => ({
+        ...movies,
+        results:
+          page > 1 ? [...prev.results, ...movies.results] : [...movies.results],
+      }));
+    } catch (error) {
+      setIsError(true);
+      console.error(error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (!searchTerm) {
+      const sessionState = isPersistedState('homeState');
+
+      if (sessionState) {
+        setState(sessionState);
+        return;
+      }
+    }
+
+    setState(initState);
+    fetchMovies(1, searchTerm);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (!isLoadingMore) return;
+
+    fetchMovies(state.page + 1, searchTerm);
+    setIsLoadingMore(false);
+  }, [isLoadingMore, searchTerm, state.page]);
+
+  useEffect(() => {
+    if (!searchTerm) sessionStorage.setItem('homeState', JSON.stringify(state));
+  }, [searchTerm, state]);
+
+  return {
+    state,
+    isLoading,
+    isError,
+    searchTerm,
+    setSearchTerm,
+    setIsLoadingMore,
+  };
+};
