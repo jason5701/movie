@@ -77,8 +77,6 @@ cosine_sim = cosine_similarity(count_matrix, count_matrix)
 movies_df = movies_df.reset_index()
 indices = pd.Series(movies_df.index, index=movies_df['title']).drop_duplicates()
 
-# print(indices.head())
-
 # get recommendations for the movies ---------------------------
 def get_recommendations(title, cosine_sim=cosine_sim):
   idx=indices[title]

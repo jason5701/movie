@@ -24,8 +24,8 @@ const Home = () => {
     <>
       {!searchTerm && state.results[0] ? (
         <TopImage
-          image={``}
-          // image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${state.results[0].backdrop_path}`}
+          // image={``}
+          image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${state.results[0].backdrop_path}`}
           title={state.results[0].title}
           text={state.results[0].overview}
         />
@@ -37,9 +37,9 @@ const Home = () => {
             key={movie.id}
             clickable
             image={
-              // movie.poster_path
-              //   ? IMAGE_BASE_URL + POSTER_SIZE + movie.poster_path
-              //   :
+              movie.poster_path
+                ? IMAGE_BASE_URL + POSTER_SIZE + movie.poster_path
+                :
                  ''
             }
             movieId={movie.id}

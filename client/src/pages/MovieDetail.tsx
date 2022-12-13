@@ -4,6 +4,7 @@ import apiSettings from '../api';
 import {
   Actor,
   BreadCrumb,
+  Button,
   Grid,
   MovieInfo,
   MovieInfobar,
@@ -20,6 +21,7 @@ interface recommnedProps {
 
 const MovieDetail = () => {
   const { movieId } = useParams();
+  const [isMore, setIsMore] = useState(false);
   const [recommend, setRecommend] = useState<recommnedProps>({
     success: false,
     msg: '',
@@ -60,8 +62,12 @@ const MovieDetail = () => {
             }
           />
         ))}
-        {/* {recommend?.success ? 'done' : ''} */}
       </Grid>
+      {recommend?.success ? (
+        <Button callback={() => true}>
+          {isMore ? '닫기' : '비슷한 작품 더보기'}
+        </Button>
+      ) : null}
     </>
   );
 };
